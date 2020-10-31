@@ -260,8 +260,9 @@ fnd_dec			u_1_fnd_dec(	.o_seg( seg_right	),
 					.i_num( one		));
 
 wire	[41:0]		six_digit_seg	;
-assign			six_digit_seg = { {4{7'b0000000}}, seg_left, seg_right};
-
+//assign			six_digit_seg = { {4{7'b0000000}}, seg_left, seg_right};
+//assign			six_digit_seg = { {4{7'b1110111}}, seg_left, seg_right};
+assign			six_digit_seg = {3{seg_left, seg_right}};
 
 
 
