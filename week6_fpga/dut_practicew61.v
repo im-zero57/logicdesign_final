@@ -355,11 +355,7 @@ input		clk		;
 input		rst_n		;
 
 wire		clk_1hz		;
-wire		clk_slow	;
 
-wire		o_sw0		;
-wire		o_sw1		;
-wire		o_sw2		;
 
 nco		u1_nco( .o_gen_clk	( clk_slow	),
 			.i_nco_num	( 32'd500000	),
@@ -371,17 +367,6 @@ nco		u2_nco(	.o_gen_clk	( clk_1hz	),
 			.clk		( clk		),
 			.rst_n		( rst_n		));
 
-debounce	u0_deb(	.o_sw		( o_sw0		),
-			.i_sw		( i_sw0		),
-			.clk		( clk_slow	));
-
-debounce	u1_deb(	.o_sw		( o_sw1		),
-			.i_sw		( i_sw1		),
-			.clk		( clk_slow	));
-
-debounce	u2_deb(	.o_sw		( o_sw2		),
-			.i_sw		( i_sw2		),
-			.clk		( clk_slow	));
 
 parameter	MODE_CLOCK = 1'b0	;
 parameter	MODE_SETUP = 1'b1	;
@@ -391,7 +376,7 @@ parameter	POS_MIN	= 1'b1		;
 
 reg		o_mode			;
 
-always @(posedge o_sw0 or negedge rst_n) begin
+always @(posedge i_sw0 or negedge rst_n) begin
 	if(rst_n == 1'b0) begin
 		o_mode <= MODE_CLOCK	;
 	end else begin
@@ -401,7 +386,7 @@ end
 
 reg		o_position		;
 
-always @(posedge o_sw1 or negedge rst_n) begin
+always @(posedge i_sw1 or negedge rst_n) begin
 	if(rst_n == 1'b0) begin
 		o_position <= POS_SEC	;
 	end else begin
@@ -421,12 +406,12 @@ always @(*) begin
 		MODE_SETUP : begin
 			case(o_position)
 				POS_SEC : begin
-					o_sec_clk = ~o_sw2	;
+					o_sec_clk = ~i_sw2	;
 					o_min_clk = 1'b0	;
 				end
 				POS_MIN : begin
 					o_sec_clk = 1'b0	;
-					o_min_clk = ~o_sw2	;
+					o_min_clk = ~i_sw2	;
 				end
 			endcase
 		end
