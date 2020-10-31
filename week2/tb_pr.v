@@ -1,68 +1,112 @@
-//-------------------------------
-// practice 1 nco tb
-//-------------------------------
 
-`timescale 1ns/1ns
+module tb_P1AtoP1C	;		// practice 1-a to 1-c
+//----------------------------------
+//instances
+//----------------------------------
 
-module	tb_pr1	;
+reg		a	;
+reg		b	;
+reg		ci	;
 
-wire		clk_gen		;
+wire		s1	;
+wire		co1	;
 
-reg	[31:0]	num		;
-reg		clk		;
-reg		rst_n		;
+wire		s2	;
+wire		co2	;
 
-parameter	tCK = 1000/1	;
+wire		s3	;
+wire		co3	;
 
-initial
-	clk = 1'b0		;
+fa_dataflow	dut_1(	.s	( s1	),
+			.co	( co1	),
+			.a	( a	),
+			.b	( b	),
+			.ci	( ci	));
 
-always
-	#(tCK/2) clk = ~clk	;
+fa_behaviro	dut_2(	.s	( s2	),
+			.co	( co2	),
+			.a	( a	),
+			.b	( b	),
+			.ci	( ci	));
 
-nco	dut(	.clk_gen	( clk_gen	),
-		.num		( 32'd1000000	),
-		.clk		( clk		),
-		.rst_n		( rst_n		));
+fa_case		dut_3(	.s	( s3	),
+			.co	( co3	),
+			.a	( a	),
+			.b	( b	),
+			.ci	( ci	));
+
+//-----------------------------------
+//stimulus
+//-----------------------------------
 
 initial begin
-	#(00*tCK)	rst_n = 1'b0	;
-	#(10*tCK)	rst_n = 1'b1	;
-	#(2000000*tCK)
-		$finish;
-
+	$display("Dataflow Level:	s1,	co1");
+	$display("Behavioral Level:	s2,	co2");
+	$display("Using 'case' :	s3,	co3");
+	$display("===============================================================================");
+	$display("	ci	a	b	s1	co1	s2	co2	s3	co3");
+	$display("===============================================================================");
+	#(50)	{ci,	a,	b} = 3'b_000;	#(50)	$display("	%b\t%b\t%b\t%b\t%b\t%b\t%b\t%b\t%b",ci,a,b,s1,co1,s2,co2,s3,co3);
+	#(50)	{ci,	a,	b} = 3'b_001;	#(50)	$display("	%b\t%b\t%b\t%b\t%b\t%b\t%b\t%b\t%b",ci,a,b,s1,co1,s2,co2,s3,co3);
+	#(50)	{ci,	a,	b} = 3'b_010;	#(50)	$display("	%b\t%b\t%b\t%b\t%b\t%b\t%b\t%b\t%b",ci,a,b,s1,co1,s2,co2,s3,co3);
+	#(50)	{ci,	a,	b} = 3'b_011;	#(50)	$display("	%b\t%b\t%b\t%b\t%b\t%b\t%b\t%b\t%b",ci,a,b,s1,co1,s2,co2,s3,co3);
+	#(50)	{ci,	a,	b} = 3'b_100;	#(50)	$display("	%b\t%b\t%b\t%b\t%b\t%b\t%b\t%b\t%b",ci,a,b,s1,co1,s2,co2,s3,co3);
+	#(50)	{ci,	a,	b} = 3'b_101;	#(50)	$display("	%b\t%b\t%b\t%b\t%b\t%b\t%b\t%b\t%b",ci,a,b,s1,co1,s2,co2,s3,co3);
+	#(50)	{ci,	a,	b} = 3'b_110;	#(50)	$display("	%b\t%b\t%b\t%b\t%b\t%b\t%b\t%b\t%b",ci,a,b,s1,co1,s2,co2,s3,co3);
+	#(50)	{ci,	a,	b} = 3'b_111;	#(50)	$display("	%b\t%b\t%b\t%b\t%b\t%b\t%b\t%b\t%b",ci,a,b,s1,co1,s2,co2,s3,co3);
+	#(50)	$finish	;
 end
 
 endmodule
 
+module tb2	;		// practice 2
 //-----------------------------------
-// practice 02 counter tb
+// instances
 //-----------------------------------
 
-module	tb_cnt	;
+reg	[3:0]	a	;
+reg	[3:0]	b	;
+reg		ci	;
 
-parameter	tCK = 1000/50	; //50MHz clock
+wire	[3:0]	s1	;
+wire		co1	;
+wire	[3:0]	s2	;
+wire		co2	;
 
-reg		clk		;
-reg		rst_n		;
+fa4_inst	dut_1(
+			.s	(s1	),
+			.co	(co1	),
+			.a	(a	),
+			.b	(b	),
+			.ci	(ci	)	);
 
-wire	[5:0]	out		;
-
-initial
-		clk = 1'b0	;
-always
-	#(tCK/2)clk = ~clk	;
-
-cnt60	dut1(	.out	( out	),
-		.clk	( clk	),
-		.rst_n	( rst_n	));
+fa4_mbit	dut_2(
+			.s	(s2	),
+			.co	(co2	),
+			.a	(a	),
+			.b	(b	),
+			.ci	(ci	)	);
+//-------------------------------------
+// stimulus
+//-------------------------------------
 
 initial begin
-#(0*tCK)	rst_n	= 1'b0	;
-#(1*tCK)	rst_n	= 1'b1	;
-#(10000*tCK)	$finish		;
-
+	$display("Using Instances : s1, co1");
+	$display("Using Multi-bit : s2, co2");
+	$display("================================================================");
+	$display("	ci	a	b	s1	co1	s2	co2");
+	$display("================================================================");
+	#(50)	{ci, a, b} = $random();	#(50)	$display("	%d\t%d\t%d\t%d\t%d\t%d\t%d" , ci, a, b, s1, co1, s2, co2);
+	#(50)	{ci, a, b} = $random();	#(50)	$display("	%d\t%d\t%d\t%d\t%d\t%d\t%d" , ci, a, b, s1, co1, s2, co2);
+	#(50)	{ci, a, b} = $random();	#(50)	$display("	%d\t%d\t%d\t%d\t%d\t%d\t%d" , ci, a, b, s1, co1, s2, co2);
+	#(50)	{ci, a, b} = $random();	#(50)	$display("	%d\t%d\t%d\t%d\t%d\t%d\t%d" , ci, a, b, s1, co1, s2, co2);
+	#(50)	{ci, a, b} = $random();	#(50)	$display("	%d\t%d\t%d\t%d\t%d\t%d\t%d" , ci, a, b, s1, co1, s2, co2);
+	#(50)	{ci, a, b} = $random();	#(50)	$display("	%d\t%d\t%d\t%d\t%d\t%d\t%d" , ci, a, b, s1, co1, s2, co2);
+	#(50)	{ci, a, b} = $random();	#(50)	$display("	%d\t%d\t%d\t%d\t%d\t%d\t%d" , ci, a, b, s1, co1, s2, co2);
+	#(50)	{ci, a, b} = $random();	#(50)	$display("	%d\t%d\t%d\t%d\t%d\t%d\t%d" , ci, a, b, s1, co1, s2, co2);
+	#(50)	{ci, a, b} = $random();	#(50)	$display("	%d\t%d\t%d\t%d\t%d\t%d\t%d" , ci, a, b, s1, co1, s2, co2);
+	#(50)	{ci, a, b} = $random();	#(50)	$display("	%d\t%d\t%d\t%d\t%d\t%d\t%d" , ci, a, b, s1, co1, s2, co2);
+	#(50)	$finish;
 end
 
 endmodule
-
